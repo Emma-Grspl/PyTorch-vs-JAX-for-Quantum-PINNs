@@ -1,0 +1,57 @@
+experiment:
+  name: "quantum_harmonic_oscillator_ground_state"
+  seed: 42
+  output_dir: "outputs/quantum_oscillator"
+  results_dir: "results/quantum_oscillator"
+  run_tag: "default"
+
+problem:
+  domain_min: -5.0
+  domain_max: 5.0
+  n_collocation: 256
+  n_eval: 512
+  mass: 1.0
+  omega: 1.0
+  hbar: 1.0
+  state_index: 0
+
+model:
+  hidden_layers: [64, 64, 64]
+  activation: "tanh"
+
+training:
+  framework: "pytorch"
+  device: "auto"
+  epochs: 4000
+  learning_rate: 0.001
+  min_learning_rate: 0.00005
+  grad_clip_norm: 1.0
+  early_stopping_patience: 800
+  early_stopping_min_delta: 0.000001
+  log_every: 200
+  lambda_pde: 1.0
+  lambda_boundary: 10.0
+  lambda_norm: 10.0
+  lambda_center: 1.0
+  lambda_sign: 0.1
+  energy_init: 0.8
+
+benchmark:
+  repeats: 5
+  warmup: 1
+  l2_success_threshold: 0.05
+  energy_success_threshold: 0.01
+
+framework_overrides:
+  pytorch:
+    training:
+      learning_rate: 0.001
+      min_learning_rate: 0.00005
+      grad_clip_norm: 0.5
+      early_stopping_patience: 800
+  jax:
+    training:
+      learning_rate: 0.0007
+      min_learning_rate: 0.0007
+      grad_clip_norm: 10.0
+      early_stopping_patience: 4000
