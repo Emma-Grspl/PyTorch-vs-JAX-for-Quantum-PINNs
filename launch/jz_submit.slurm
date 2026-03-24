@@ -38,7 +38,16 @@ cd "$PROJECT_DIR"
 # Run tag dedie au job Slurm pour separer clairement les sorties HPC.
 RUN_TAG="jz_${SLURM_JOB_ID:-manual}"
 
-srun ./project1/bin/python -u scripts/hpc_run_benchmark.py \
+if [ -x "./project1/bin/python" ]; then
+  PYTHON_BIN="./project1/bin/python"
+else
+  PYTHON_BIN="$(command -v python)"
+fi
+
+echo "Using Python: ${PYTHON_BIN}"
+"${PYTHON_BIN}" --version
+
+srun "${PYTHON_BIN}" -u scripts/hpc_run_benchmark.py \
   --device cuda \
   --frameworks pytorch jax \
   --repeats 5 \
