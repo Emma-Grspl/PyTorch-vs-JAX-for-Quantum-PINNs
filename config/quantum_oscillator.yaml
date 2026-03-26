@@ -51,7 +51,7 @@ framework_overrides:
       early_stopping_patience: 800
   jax:
     training:
-      learning_rate: 0.0007
-      min_learning_rate: 0.0007
-      grad_clip_norm: 10.0
-      early_stopping_patience: 4000
+      learning_rate: 0.0003
+      min_learning_rate: 0.00005
+      grad_clip_norm: 1.0
+      early_stopping_patience: 800

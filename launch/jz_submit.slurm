@@ -62,5 +62,5 @@ srun "${PYTHON_BIN}" -u scripts/hpc_run_benchmark.py \
   --frameworks pytorch jax \
   --repeats 3 \
   --warmup 1 \
-  --epochs 8000 \
+  --epochs 4000 \
   --tag "$RUN_TAG"
