@@ -60,6 +60,7 @@ echo "JAX check:"
 srun "${PYTHON_BIN}" -u scripts/hpc_run_benchmark.py \
   --device cuda \
   --frameworks pytorch jax \
-  --repeats 5 \
+  --repeats 3 \
   --warmup 1 \
+  --epochs 8000 \
   --tag "$RUN_TAG"
