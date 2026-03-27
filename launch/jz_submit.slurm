@@ -64,6 +64,6 @@ srun "${PYTHON_BIN}" -u scripts/hpc_run_benchmark.py \
   --warmup 1 \
   --epochs 4000 \
   --objective physics_plus_data \
-  --n-data 32 \
+  --n-data 64 \
   --lambda-data 1.0 \
   --tag "$RUN_TAG"
