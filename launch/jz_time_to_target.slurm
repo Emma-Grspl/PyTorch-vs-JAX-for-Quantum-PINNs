@@ -16,6 +16,7 @@ set -euo pipefail
 
 module purge
 module load pytorch-gpu/py3/2.1.1
+source /lustre/fswork/projects/rech/fdb/usv13rn/jax_cuda12_test/bin/activate
 
 mkdir -p slurm/log
 
@@ -23,19 +24,13 @@ echo "Job on ${SLURMD_NODENAME:-unknown-node}"
 date
 nvidia-smi
 
-# Activate an additional JAX environment only if you provide it explicitly.
-# Example:
-# export JAX_ENV_PATH=/lustre/fswork/projects/rech/fdb/usv13rn/venvs/jax_pinn_gpu311
-# sbatch launch/jz_time_to_target.slurm
-if [ -n "${JAX_ENV_PATH:-}" ]; then
-  source "${JAX_ENV_PATH}/bin/activate"
-fi
-
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-10}"
 export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK:-10}"
+export JAX_PLATFORMS=cuda
+export XLA_PYTHON_CLIENT_PREALLOCATE=false
 
-PROJECT_DIR="${PROJECT_DIR:-$PWD}"
+PROJECT_DIR="${PROJECT_DIR:-/lustre/fswork/projects/rech/fdb/usv13rn/Jax_vs_Pytorch_Oscillateur_Harmonique}"
 cd "$PROJECT_DIR"
 
 RUN_TAG="${RUN_TAG:-jz_t2t_${SLURM_JOB_ID:-manual}}"
@@ -48,20 +43,17 @@ EVAL_EVERY="${EVAL_EVERY:-10}"
 N_DATA="${N_DATA:-64}"
 LAMBDA_DATA="${LAMBDA_DATA:-1.0}"
 
-if [ -x "./project1/bin/python" ]; then
-  PYTHON_BIN="./project1/bin/python"
-else
-  PYTHON_BIN="$(command -v python)"
-fi
+PYTHON_BIN="$(command -v python)"
 
 echo "Using Python: ${PYTHON_BIN}"
+echo "VIRTUAL_ENV=${VIRTUAL_ENV:-}"
 "${PYTHON_BIN}" --version
 
 echo "Torch check:"
 "${PYTHON_BIN}" -c "import torch; print(torch.__version__)"
 
 echo "JAX check:"
-"${PYTHON_BIN}" -c "import jax, jaxlib; print(jax.__version__); print(jaxlib.__version__); print(jax.devices())"
+"${PYTHON_BIN}" -c "import jax, jaxlib; print(jax.__version__); print(jaxlib.__version__); print('jax_devices=', jax.devices()); print('jax_backend=', jax.default_backend())"
 
 COMMAND=(
   "${PYTHON_BIN}" -u scripts/hpc_time_to_target.py
