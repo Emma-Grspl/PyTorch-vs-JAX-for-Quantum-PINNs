@@ -70,6 +70,9 @@ def get_system_info() -> dict[str, Any]:
         ]
     except ModuleNotFoundError:
         info["jax_version"] = None
+    except Exception as exc:  # pragma: no cover - best-effort metadata only
+        info["jax_version"] = None
+        info["jax_error"] = str(exc)
 
     info["nvidia_smi"] = _run_command(
         [
